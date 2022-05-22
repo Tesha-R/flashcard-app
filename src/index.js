@@ -1,21 +1,82 @@
 import displayHeader from "/src/displayHeader.js";
 // Variables
-// Create deck
+// Deck
 const formDeck = document.getElementById("form-deck");
 const deckTitle = document.getElementById("deck-title");
 const deckDescription = document.getElementById("deck-description");
-// Add cards
+const deckList = document.getElementById("deck-list");
+// Cards
 const formAddCards = document.getElementById("form-add-cards");
 const cardFront = document.getElementById("card-front");
 const cardBack = document.getElementById("card-back");
+const deckCards = document.querySelectorAll(".deck-card");
+// Page
 const appEl = document.getElementById("app");
 const container = document.querySelector(".container");
-const deckList = document.getElementById("deck-list");
-// create random id for deck
+// Arrays for deck and cards
 let decks = [];
 let cards = [];
+// create random id for deck
 function randomNum() {
   return Math.floor(Math.random() * 100) - 1;
+}
+
+container.addEventListener("click", (e) => {
+  let deckId = Number(e.target.dataset.id);
+  if (e.target.matches(".delete-card-btn")) {
+    e.target.parentElement.parentElement.remove();
+    deleteCard(deckId);
+    console.log("delete card");
+  }
+});
+
+// Delete card from local storage
+function deleteCard(deckId) {
+  for (let i = 0; i < cards.length; i++) {
+    if (cards[i].id === deckId) {
+      cards.splice(i, 1);
+    }
+  }
+  localStorage.setItem("cards", JSON.stringify(cards));
+}
+
+// Delete multiple cards from local storage
+function deleteMultipleCards(deckId) {
+  for (let i = 0; i < cards.length; i++) {
+    if (Number(cards[i].id) === deckId) {
+      cards.splice(i, 1);
+      i--;
+    }
+  }
+  localStorage.setItem("cards", JSON.stringify(cards));
+}
+
+// Delete deck from local storage
+function deleteDeck(deckId) {
+  for (let i = 0; i < decks.length; i++) {
+    if (decks[i].id === deckId) {
+      decks.splice(i, 1);
+    }
+  }
+  localStorage.setItem("decks", JSON.stringify(decks));
+}
+
+// Delete deck with matching cards
+function handleDeleteDeck() {
+  container.addEventListener("click", (e) => {
+    let deckId = Number(e.target.dataset.id);
+    if (e.target.matches(".delete-deck-btn")) {
+      console.log("delete btn");
+      // Delete html element from screen
+      e.target.parentElement.parentElement.remove();
+      deckCards.forEach((deck) => {
+        appEl.removeChild(deck);
+      });
+      deleteDeck(deckId);
+      deleteMultipleCards(deckId);
+      displayDeckList();
+    }
+  });
 }
 
 function handleViewDeck() {
@@ -23,48 +84,47 @@ function handleViewDeck() {
   container.addEventListener("click", (e) => {
     // turn deck Id into a number
     deckId = Number(e.target.dataset.id);
-    let html = "";
     if (e.target.matches(".view-deck-btn")) {
       console.log("view button");
-      console.log("deck id " + deckId);
-      //showDeck(deckId);
-      showAll(deckId);
-      console.log(cards);
+      // Show all cards that match deck id
+      showCardsAndDeck(deckId);
     }
   });
 }
 function showDeck(deckId) {
   decks = JSON.parse(localStorage.getItem("decks")) || [];
   let html = "";
-  decks.map((deck) => {
-    if (deck.id === deckId) {
-      console.log("deck id " + deck.id);
-      html = `
+  const deck = decks.find((deck) => {
+    return deck.id === deckId;
+  });
+  console.log("deck id " + deck.id);
+  html += `
     <div class="deck card">
     <div class="card-body">deck id ${deck.id}
       <h2 class="deck-name">${deck.name}</h2>
       <p class="deck-desc">${deck.description}</p>
-      <button type="button" class="view-deck-btn btn btn-secondary" data-id=${deck.id}>View</button>
       <button type="button" class="study-deck-btn btn btn-secondary" data-id=${deck.id}>Study</button>
-      <button type="button" class="edit-deck-btn btn btn-secondary" data-id=${deck.id}>Edit</button>
       <button type="button" class="btn btn-primary add-cards-btn" data-bs-toggle="modal" data-bs-target="#addCardsToDeck" data-id=${deck.id}>
   + Add cards
   </button>
+  <button type="button" class="edit-deck-btn btn btn-secondary" data-id=${deck.id}>Edit</button>
       <button type="button" class="delete-deck-btn btn btn-danger" data-id=${deck.id}>Delete</button>
     </div>
   </div>
       `;
-      appEl.innerHTML = html;
-    }
-  });
+  return html;
 }
-function showAll(deckId) {
+
+/* --------- Creating the cards ---------  */
+function showCardsAndDeck(deckId) {
+  //console.log("showCardsAndDeck");
   cards = JSON.parse(localStorage.getItem("cards")) || [];
-  let html = "";
-  cards.map((card) => {
-    if (card.id == deckId) {
-      console.log("card id " + card.id);
-      html += `
+  let html = showDeck(deckId);
+  //console.log(html);
+  const showCards = cards.filter((card) => Number(card.id) === deckId);
+  showCards.forEach((card) => {
+    // console.log("card id " + card.id);
+    html += `
           <div class="deck-card card" data-id=${card.id}>
           <div class="card-body">
           <div class="card-wrap">
@@ -75,19 +135,15 @@ function showAll(deckId) {
           <div class="card-back"><p>${card.back}</p></div>
           </div>
             <button type="button" class="edit-card-btn btn btn-secondary" data-id=${card.id}>Edit</button>
-            <button type="button" class="flip-card-btn btn btn-danger" data-id=${card.id}>Delete</button>
+            <button type="button" class="delete-card-btn btn btn-danger" data-id=${card.id}>Delete</button>
       
           </div>
         </div>
         `;
-      appEl.innerHTML = html;
-    } else {
-      showDeck(deckId);
-    }
   });
+  //console.log(html);
+  appEl.innerHTML = html;
 }
-
-/* --------- Creating the cards ---------  */
 // trigger create card modal
 container.addEventListener("click", (e) => {
   if (e.target.matches(".add-cards-btn")) {
@@ -98,6 +154,7 @@ container.addEventListener("click", (e) => {
 });
 
 formAddCards.addEventListener("submit", (e) => {
+  e.preventDefault();
   console.log("add cards");
   e.preventDefault();
   acceptCardData();
@@ -105,13 +162,14 @@ formAddCards.addEventListener("submit", (e) => {
 // get data from new deck form
 function acceptCardData() {
   // create object and push data into deck array
-  cards.push({
-    id: formAddCards.dataset.id,
+  cards.unshift({
+    id: Number(formAddCards.dataset.id),
     front: cardFront.value,
     back: cardBack.value,
   });
   localStorage.setItem("cards", JSON.stringify(cards));
-  console.log(cards);
+  showCardsAndDeck(Number(formAddCards.dataset.id));
+  //console.log(cards);
 }
 
 /* --------- Creating the deck ---------  */
@@ -151,9 +209,6 @@ function displayDeckList() {
                 <button type="button" class="view-deck-btn btn btn-secondary" data-id=${deck.id}>View</button>
                 <button type="button" class="study-deck-btn btn btn-secondary" data-id=${deck.id}>Study</button>
                 <button type="button" class="edit-deck-btn btn btn-secondary" data-id=${deck.id}>Edit</button>
-                <button type="button" class="btn btn-primary add-cards-btn" data-bs-toggle="modal" data-bs-target="#addCardsToDeck" data-id=${deck.id}>
-        + Add cards
-      </button>
                 <button type="button" class="delete-deck-btn btn btn-danger" data-id=${deck.id}>Delete</button>
                 <p>number of cards ${cardCount.length}</p>
               </div>
@@ -172,6 +227,7 @@ function displayDeckList() {
 function main() {
   displayDeckList();
   handleViewDeck();
+  handleDeleteDeck();
 }
 
 main();
