@@ -1,4 +1,4 @@
-const appEl = document.getElementById("app");
+import { appEl } from "./index.js";
 
 // display flashcard header with create deck button
 function displayHeader() {

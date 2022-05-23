@@ -35,35 +35,27 @@ body {
 }
 
 /* Study view */
-.study-card {
-  align-items: center;
-  justify-content: center;
+.cards-study-list {
   position: absolute;
-  left: 0;
-  right: 0;
-  margin: 0 auto;
-  height: 90vh;
+  width: 74vw;
+  height: 75vh;
+  overflow: hidden;
 }
 
-.study-card .card-body {
-  flex: none;
-  justify-content: center;
-}
-
-.study-card .card-wrap {
-  align-items: center;
-}
-
-.study-card .card-main {
+.cards-study-content {
+  position: relative;
   width: 100%;
 }
 
-.study-card p.study {
-  font-size: 3rem;
+.card-study {
+  height: 75vh;
+  align-items: center;
+  justify-content: center;
 }
-
-.card-flip-list {
-  position: relative;
-  overflow: hidden;
-  height: 80vh;
+.card-study .card-body {
+  flex: inherit;
+  padding: 2rem;
+}
+.card-study .display-2 {
+  margin-bottom: 2rem;
 }
