@@ -11,13 +11,46 @@ body {
   margin-bottom: 1rem;
 }
 
-/* Deck view */
+.card-body {
+  padding: 2rem;
+}
+.hide {
+  display: none;
+}
 
+.btn-primary {
+  color: #fff;
+  background-color: #4277ff;
+  border-color: #4277ff;
+}
+
+.btn-light {
+  color: #000;
+  background-color: #edf1fa;
+  border-color: #edf1fa;
+}
+
+.group-btns {
+  margin-bottom: 1rem;
+}
+
+.deck-name {
+  margin-bottom: 0.75rem;
+}
+
+.deck-desc {
+  margin-bottom: 1.5rem;
+}
+/* Deck view */
+.card-front p.display-6 {
+  margin-bottom: 3rem;
+}
 .deck,
 .card {
   box-shadow: 0 0.125rem 0.25rem rgb(0 0 0 / 8%);
   border: none;
   margin-bottom: 1rem;
+  border-radius: 1rem;
 }
 
 .deck-card .card-wrap {

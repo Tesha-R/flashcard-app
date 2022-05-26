@@ -8,6 +8,7 @@ import { displayDeck } from "./displayDeck.js";
 function handleViewDeck() {
   let deckId = "";
   container.addEventListener("click", (e) => {
+    //e.preventDefault();
     // turn deck Id into a number
     deckId = Number(e.target.dataset.id);
     if (e.target.matches(".view-deck-btn")) {
@@ -28,17 +29,16 @@ function showCardsAndDeck(deckId) {
   showCards.forEach((card) => {
     // console.log("card id " + card.id);
     html += `
-            <div class="deck-card card" data-id=${card.id}>
+            <div class="deck-card card">
             <div class="card-body">
             <div class="card-wrap">
             <div class="card-front">
-            <p>card id ${card.id}</p>
             <p class="display-6">${card.front}</p>
             </div>
-            <div class="card-back"><p>${card.back}</p></div>
+            <div class="card-back"><p class="lead">${card.back}</p></div>
             </div>
-              <button type="button" class="edit-card-btn btn btn-secondary" data-id=${card.id}>Edit</button>
-              <button type="button" class="delete-card-btn btn btn-danger" data-id=${card.id}>Delete</button>
+              <button type="button" class="edit-card-btn btn btn-light" data-id=${card.id}><img src="../assets/edit-3.svg" alt="edit icon"/> Edit</button>
+              <button type="button" class="delete-card-btn btn btn-light" data-id=${card.id}><img src="../assets/trash-2.svg" alt="delete icon"/> Delete</button>
         
             </div>
           </div>

@@ -17,7 +17,7 @@
         <li class="breadcrumb-item active" aria-current="page">TBD</li>
       </ol>
     </nav>
-    <!-- Modal -->
+    <!-- Modal - create a deck -->
     <div class="modal fade" id="createDeck" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
@@ -36,11 +36,42 @@
                 <textarea name="deck-description" id="deck-description" class="form-control"></textarea>
               </div>
               <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" aria-label="Close">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" aria-label="Close">
                   Cancel
                 </button>
                 <button type="submit" id="submit-deck-btn" class="btn btn-primary">
                   Create
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Modal - edit a deck -->
+    <div class="modal fade" id="editDeck" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Edit deck</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form id="form-deck-edit">
+              <div>
+                <label>Deck title</label>
+                <input type="text" name="deck-title" id="edit-deck-title" class="form-control" />
+              </div>
+              <div>
+                <label>Deck description</label>
+                <textarea name="deck-description" id="edit-deck-description" class="form-control"></textarea>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" aria-label="Close">
+                  Cancel
+                </button>
+                <button type="submit" id="submit-edit-deck-btn" class="btn btn-primary">
+                  Submit
                 </button>
               </div>
             </form>
@@ -69,7 +100,7 @@
                 <textarea name="card-back" id="card-back" class="form-control"></textarea>
               </div>
               <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" aria-label="Close">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" aria-label="Close">
                   Cancel
                 </button>
                 <button type="submit" id="submit-add-cards-btn" class="btn btn-primary">

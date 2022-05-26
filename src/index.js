@@ -5,25 +5,23 @@ import { handleDeleteDeck } from "./deleteDeck.js";
 // Variables
 // Deck
 const formDeck = document.getElementById("form-deck");
+const formDeckEdit = document.getElementById("form-deck-edit");
 const deckTitle = document.getElementById("deck-title");
 const deckDescription = document.getElementById("deck-description");
-const deckList = document.getElementById("deck-list");
-const deckName = document.querySelector(".deck-name");
-const deckDesc = document.querySelector(".deck-desc");
 // Cards
 const formAddCards = document.getElementById("form-add-cards");
 const cardFront = document.getElementById("card-front");
 const cardBack = document.getElementById("card-back");
-const flipCardBtn = document.querySelectorAll(".flip-card-button");
 // Page
 const appEl = document.getElementById("app");
 const container = document.querySelector(".container");
-
+// Get decks from local storage
 function getDecksLocalStorage() {
   return localStorage.getItem("decks")
     ? JSON.parse(localStorage.getItem("decks"))
     : [];
 }
+// Get cards from local storage
 function getCardsLocalStorage() {
   return JSON.parse(localStorage.getItem("cards")) || [];
 }
@@ -31,32 +29,63 @@ function getCardsLocalStorage() {
 function randomNum() {
   return Math.floor(Math.random() * 100) - 1;
 }
-function nextCard(deckId) {}
+// Get number of cards associated with deck
+function numberOfCards(deckId) {
+  let cards = getCardsLocalStorage();
+  let cardCount = cards.filter((card) => card.id === deckId);
+  return cardCount.length;
+}
 
-const allCards = document.querySelectorAll(".card-study");
-// select next card button
-// Event listener and next card functionality
+// Flip button for card to show front and back - still in progress
 container.addEventListener("click", (e) => {
-  if (e.target.matches(".next-card-btn")) {
-    console.log("next-card-btn");
-    allCards.forEach((card, index) => {
-      // appEl.innerHTML = studyCardHtml(card);
-      card.style.backgroundColor = "red";
-      //card.classList.add("fade-in");
-      //card.style.transform = `translateX(${100 * (index - currCardIndex)}%)`;
-    });
+  let cardFront = document.querySelector(".card-front");
+  let cardBack = document.querySelector(".card-back");
+  if (e.target.matches(".flip-card-btn")) {
+    console.log(".flip-card-btn");
+    if (cardBack.classList.contains("hide")) {
+      cardBack.classList.toggle("hide");
+      cardFront.classList.add("hide", "flipOutX");
+    } else {
+      cardFront.classList.toggle("hide");
+      cardBack.classList.add("hide");
+    }
   }
 });
 
-function studyCardHtml(card) {
+// Next button function for card to cycle through cards in deck
+let counter = 1;
+function handleNextBtn(deckId) {
+  let cards = getCardsLocalStorage();
+  let showCards = cards.filter((card) => card.id === deckId);
+  if (counter < showCards.length) {
+    console.log(counter, "if");
+    appEl.innerHTML = studyCardFrontHtml(showCards[counter]);
+    counter++;
+    console.log(counter, " counter");
+  } else {
+    console.log(counter, "else");
+    counter = 0;
+  }
+}
+// Next button event handler
+container.addEventListener("click", (e) => {
+  let deckId = Number(e.target.dataset.id);
+  if (e.target.matches(".next-card-btn")) {
+    console.log(".next-card-btn");
+    handleNextBtn(deckId);
+  }
+});
+// HTML for cards in study view
+function studyCardFrontHtml(card) {
   return `
   <div class="card-study card" data-id=${card.id}>
   <div class="card-body">
   <div class="card-front">
-  <p>card id ${card.id}</p>
   <p class="display-2">${card.front}</p>
   </div>
-  <div class="card-back"><p>${card.back}</p></div>
+  <div class="card-back hide">
+  <p class="display-2">${card.back}</p>
+  </div>
   </div>
    <div class="group-btn">
    <button type="button" class="flip-card-btn btn btn-secondary" data-id=${card.id}>Flip</button>
@@ -65,23 +94,15 @@ function studyCardHtml(card) {
 </div>
 `;
 }
-
+// When study button click - show first card in deck
 function handleStudyView(deckId) {
-  let html = "";
   let cards = getCardsLocalStorage();
   const showCards = cards.filter((card) => Number(card.id) === deckId);
-  showCards.forEach((card) => {
-    // console.log("card id " + card.id);
-    html += studyCardHtml(card);
-  });
-  //console.log(html);
-  appEl.innerHTML = `<div class="cards-study-list">
-  <div class="cards-study-content">${html}</div>
-  </div>
-  `;
+  let firstCard = showCards[0];
+  appEl.innerHTML = studyCardFrontHtml(firstCard);
 }
 
-// Study deck
+// Study deck button event handler
 container.addEventListener("click", (e) => {
   let deckId = Number(e.target.dataset.id);
   if (e.target.matches(".study-deck-btn")) {
@@ -90,7 +111,6 @@ container.addEventListener("click", (e) => {
   }
 });
 
-/* --------- Event handlers ---------  */
 // Delete card
 container.addEventListener("click", (e) => {
   let deckId = Number(e.target.dataset.id);
@@ -103,10 +123,14 @@ container.addEventListener("click", (e) => {
 
 // Trigger create card modal - add deck id to card
 container.addEventListener("click", (e) => {
-  if (e.target.matches(".add-cards-btn")) {
+  if (
+    e.target.matches(".add-cards-btn") ||
+    e.target.matches(".edit-deck-btn")
+  ) {
     console.log("add card button");
     //console.log(e.target.dataset.id);
     // Add deck id to card
+    formDeckEdit.setAttribute("data-id", e.target.dataset.id);
     formAddCards.setAttribute("data-id", e.target.dataset.id);
   }
 });
@@ -153,7 +177,6 @@ function main() {
   displayDeckList();
   handleViewDeck();
   handleDeleteDeck();
-  //handleStudyView();
 }
 
 main();
@@ -167,4 +190,10 @@ main();
 // console.log(oranges);
 // localStorage.removeItem("orange");
 
-export { appEl, container, getDecksLocalStorage, getCardsLocalStorage };
+export {
+  appEl,
+  container,
+  numberOfCards,
+  getDecksLocalStorage,
+  getCardsLocalStorage,
+};
