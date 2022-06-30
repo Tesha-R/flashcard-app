@@ -38,19 +38,19 @@ function numberOfCards(deckId) {
 
 // Flip button for card to show front and back - still in progress
 container.addEventListener("click", (e) => {
+  //let deckId = Number(e.target.dataset.id);
   let cardFront = document.querySelector(".card-front");
   let cardBack = document.querySelector(".card-back");
-  if (e.target.matches(".flip-card-btn")) {
-    console.log(".flip-card-btn");
-    if (cardBack.classList.contains("hide")) {
-      cardBack.classList.toggle("hide");
-      cardFront.classList.add("hide", "flipOutX");
-    } else {
-      cardFront.classList.toggle("hide");
-      cardBack.classList.add("hide");
-    }
+
+  if (cardBack.classList.contains("hide")) {
+    cardBack.classList.toggle("hide");
+    cardFront.classList.add("hide");
+  } else {
+    cardFront.classList.toggle("hide");
+    cardBack.classList.add("hide");
   }
 });
+// pass in specific card
 
 // Next button function for card to cycle through cards in deck
 let counter = 1;
